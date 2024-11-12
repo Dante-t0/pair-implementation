@@ -2,11 +2,12 @@ import os
 import openai
 import re
 import json
+import time
 
 class PAIR:
     openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    def __init__(self, model='gpt-3.5-turbo', 
+    def __init__(self, model='gpt-3.5-turbo',
                  judge__system_filepath= 'judge_system.txt',
                  attacker_system_filepath='roleplay_system.txt', 
                  threshold=10):
@@ -61,6 +62,7 @@ class PAIR:
             {'role': 'user', 'content': judge_prompt}
         ]
         response = openai.chat.completions.create(model = self.model, messages = messages)
+        time.sleep(21)
         return response.choices[0].message.content
 
     def judge_function(self, prompt, response, attack_objective):
@@ -79,6 +81,7 @@ class PAIR:
             {'role': 'user', 'content': attacker_prompt}
         ]
         response = openai.chat.completions.create(model=self.model, messages = messages, max_tokens = 1000)
+        time.sleep(21)
         return response.choices[0].message.content
 
     def target_call(self, prompt):
@@ -89,6 +92,7 @@ class PAIR:
             ],
             max_tokens=1000,
         )
+        time.sleep(21)
         return response.choices[0].message.content
         
     def pair(self, iterations, objective):
