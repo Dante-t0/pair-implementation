@@ -2,6 +2,17 @@ import os
 import openai
 import re
 import json
+from openai import OpenAI
+
+# Set Together API KEY
+TOGETHER_BASE_URL = "https://api.together.xyz"
+TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
+
+client = OpenAI(
+    base_url = TOGETHER_BASE_URL,
+    api_key = TOGETHER_API_KEY,
+)
+
 
 class PAIR:
     openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -35,34 +46,31 @@ class PAIR:
         with open(filename, encoding='utf-8') as f:
             content = f.read()
             return content
-
-    def configure_attacker_system(self, word_to_replace, replacement):
-        pattern = fr"\[\[{word_to_replace}\]\]"
-        self.attacker_system = re.sub(pattern, replacement, self.attacker_system)
-
-    def rating_extract(self, response):
-        rating_pattern = r"\[\[(.*?)\]\]"
-        rating = re.findall(rating_pattern, response)
-        return int(rating[0])
-
-    def extract_prompt_from_json(self, json_string):
+            
+    def extract_prompt_from_string(self, string):
         try:
-            # Parse the JSON string into a dictionary
-            match = re.search(r'^[^{]*\{.*?\}', json_string)
-            if match:
-                data = json.loads(match.group(0))
-            else:
-                print("error decoding JSON, missing closing curly brace")
+            # Match the JSON object using regex
+            match = re.search(r'\{.*?\}', string, re.DOTALL)
+            if not match:
+                #print("No JSON object found in the string.")
                 return None
-            # Extract and return the 'prompt' part
+    
+            # Extract the JSON substring
+            json_part = match.group(0)
+    
+            # Parse the JSON
+            data = json.loads(json_part)
+    
+            # Return the 'prompt' value if it exists
             return data.get("prompt", "")
+    
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
-            print("error", json_string)
+            #print(f"Error decoding JSON: {e}")
             return None
+
     
     def judge_call(self, prompt, response, objective):
-        only_attack_prompt = self.extract_prompt_from_json(prompt)
+        only_attack_prompt = self.extract_prompt_from_string(prompt)
         if only_attack_prompt == None:
             only_attack_prompt = prompt
             
@@ -93,24 +101,49 @@ class PAIR:
             {'role': 'user', 'content': attacker_prompt}
         ]
         
-        response = openai.chat.completions.create(
-            model = self.attacker_model,
-            messages = messages,
-            temperature = 1.0,
-            top_p = 0.9,   # Controls the diversity of the responses
-            max_tokens = 1000    
-        )
-        return response.choices[0].message.content
-
+        # Customize behavior for Mixtral model
+        if self.attacker_model == "mistralai/Mixtral-8x7B-Instruct-v0.1":
+            response = client.chat.completions.create(
+                model=self.attacker_model,
+                messages=messages,
+                top_p=0.9,  # Controls the diversity of the responses
+                response_format={"type": "json_object"},  # Ensures JSON format
+                stop=["}"],  # Stops at the first closing brace
+                max_tokens=1000
+            )
+            # Include the closing brace in the response
+            return response.choices[0].message.content + "}"
+        else:
+            # Default behavior for other models
+            response = openai.chat.completions.create(
+                model=self.attacker_model,
+                messages=messages,
+                temperature=1.0,
+                top_p=0.9,  # Controls the diversity of the responses
+                max_tokens=1000
+            )
+            return response.choices[0].message.content
+            
     def target_call(self, prompt):
-        response = openai.chat.completions.create(
-            model = self.target_model,
-            messages = [
-                {"role": "user", "content": prompt},
-            ],
-            max_tokens = 1000,
-        )
-        return response.choices[0].message.content
+        #replace with openai for chatgpt 3.5 turbo
+        if self.target_model == 'gpt-3.5-turbo':
+            response = openai.chat.completions.create(
+                model = self.target_model,
+                messages = [
+                    {"role": "user", "content": prompt},
+                ],
+                max_tokens = 1000,
+            )
+            return response.choices[0].message.content
+        else:
+            response = client.chat.completions.create(
+                model = self.target_model,
+                messages = [
+                    {"role": "user", "content": prompt},
+                ],
+                max_tokens = 1000,
+            )
+            return response.choices[0].message.content
         
     def pair(self, iterations, objective):
         
@@ -153,27 +186,53 @@ class PAIR:
             # If success, return the successful prompt
             if success:
                 print(f"Successful jailbreak on iteration {i+1}")
-                return f"{self.extract_prompt_from_json(attacker_prompt)} \n\nResponse: {target_response}"
+                return f"{self.extract_prompt_from_string(attacker_prompt)} \n\nResponse: {target_response}"
                 
             conversation_history.append({"Attempted Jailbreak Prompt": attacker_prompt, "Response from Target LLM": target_response})
         return None
 
 def choose_model():
     print("Select the model to jailbreak:")
-    print("1. gpt-3.5-turbo")
+    print("1. OpenAI: gpt-3.5-turbo")
+    print("2. MistralAI: Mixtral-8x7B-Instruct-v0.1")
+    print("3. Gryphe: MythoMax-L2-13b")
+    print("4. Qwen: Qwen2.5-7B-Instruct-Turbo")
+    print("5. Google: gemma-2b-it")
     choice = input("Enter the number corresponding to your choice (default: 1): ").strip()
 
     if choice == "1" or choice == "":
         return "gpt-3.5-turbo"
+    elif choice == "2":
+        return "mistralai/Mixtral-8x7B-Instruct-v0.1"
+    elif choice == "3":
+        return "Gryphe/MythoMax-L2-13b"
+    elif choice == "4":
+        return "Qwen/Qwen2.5-7B-Instruct-Turbo"
+    elif choice == "5":
+        return "google/gemma-2b-it"
     else:
         print("Invalid choice. Defaulting to gpt-3.5-turbo.")
         return "gpt-3.5-turbo"
 
 
 if __name__ == "__main__":
+    print("Select the attacker model:")
+    print("1. gpt-3.5-turbo")
+    print("2. Mixtral-8x7B-Instruct-v0.1")
+    attacker_choice = input("Enter the number corresponding to your choice (default: 1): ").strip()
+
+    if attacker_choice == "1" or attacker_choice == "":
+        attacker_model = "gpt-3.5-turbo"
+    elif attacker_choice == "2":
+        attacker_model = "mistralai/Mixtral-8x7B-Instruct-v0.1"
+    else:
+        print("Invalid choice. Defaulting to gpt-3.5-turbo.")
+        attacker_model = "gpt-3.5-turbo"
+
     model_to_jailbreak = choose_model()
-    print(f"Using {model_to_jailbreak} as the target model for jailbreak.")
-    pair_program = PAIR(target_model = model_to_jailbreak)
+    print(f"Using {model_to_jailbreak} as the target model and {attacker_model} as the attacker model.")
+    pair_program = PAIR(target_model=model_to_jailbreak, attacker_model=attacker_model)
+    
     iterations = int(input("Enter the number of iterations for the attack: "))
     objective = input("Enter the jailbreak objective: ")
     print('Starting Jailbreak...')
@@ -184,4 +243,3 @@ if __name__ == "__main__":
         print(f"\nSuccessful prompt: {successful_prompt}")
     else:
         print("Jailbreak not found. Check output.txt for possible jailbreak prompts.")
-    
