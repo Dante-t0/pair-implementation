@@ -1,6 +1,6 @@
 # Implementation of PAIR Algorithm for LLM Response Analysis
 
-This repository implements the PAIR (Progressive Adversarial Iterative Refinement) algorithm for analyzing Large Language Model responses under adversarial conditions. The implementation enables researchers to study model behaviors, safety mechanisms, and potential vulnerabilities through systematic prompt engineering.
+This repository implements the PAIR (Prompt Automatic Iterative Refinement) algorithm for analyzing Large Language Model responses under adversarial conditions. The implementation enables researchers to study model behaviors, safety mechanisms, and potential vulnerabilities through systematic prompt engineering.
 
 > **Note**: This tool is intended strictly for academic research and security analysis. Any use for malicious purposes is prohibited.
 
@@ -46,11 +46,11 @@ The script requires API keys for the OpenAI API and the Together API:
 
 ### Required Files
 1. `pair.py`
-   > - Main script for running the PAIR algorithm.
+   > Main script for running the PAIR algorithm.
 2. `judge_system.txt`
-   > - Defines the judging system for evaluating model responses.
-   > - This file includes task guidelines and evaluation metrics, specifying how to rate the language model's responses on ethical, legal, or safety violations.
-   > - Ensure this file is located in the same directory as pair.py, or adjust the file path in the script.
+   > Defines the judging system for evaluating model responses.
+   > This file includes task guidelines and evaluation metrics, specifying how to rate the language model's responses on ethical, legal, or safety violations.
+   > Ensure this file is located in the same directory as pair.py, or adjust the file path in the script.
 3. `attacker_system.txt`
    > - Defines the system prompt for the attacking LLM that generates adversarial prompts
    > - Format: Instructions and guidelines for generating prompts following the PAIR methodology
