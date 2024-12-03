@@ -29,7 +29,6 @@ This repository implements the PAIR (Prompt Automatic Iterative Refinement) algo
 - **Python 3.8 or higher** is required.
 - Required Python libraries:
   - `openai`
-  - `os`
   - `json`
   - `re`
 - Install dependencies using:
