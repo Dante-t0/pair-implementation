@@ -64,6 +64,7 @@ The script requires API keys for the OpenAI API and the Together API:
 ### Environment Variables
 - `OPENAI_API_KEY`: Your OpenAI API key.
 - `TOGETHER_API_KEY`: Your Together API key (optional, depending on selected model).
+
 Ensure the following environment variables are set:
 ```bash
 export OPENAI_API_KEY='your_openai_api_key'
