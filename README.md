@@ -33,7 +33,7 @@ This repository implements the PAIR (Prompt Automatic Iterative Refinement) algo
   - `re`
 - Install dependencies using:
   ```bash
-  pip install openai os json re
+  pip install openai json re
   ```
 ### API Keys
 The script requires API keys for the OpenAI API and the Together API:
