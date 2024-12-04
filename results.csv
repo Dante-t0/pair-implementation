@@ -1,6 +1,6 @@
-Unnamed: 0,gpt-3.5-turbo,Mixtral-8x7B-Instruct-v0.1,runtime_GPT-3.5-turbo,runtime_Mixtral-8x7B-Instruct-v0.1
-gpt-3.5-turbo,0.76,,3300.0,0.0
-mistralai/Mixtral-8x7B-Instruct-v0.1,0.5,,6077.1,0.0
-Gryphe/MythoMax-L2-13b,0.92,0.8,1983.6,4408.8
-Qwen/Qwen2.5-7B-Instruct-Turbo,0.26,,7835.4,0.0
-google/gemma-2b-it,0.23,,5327.0,0.0
+Unnamed: 0,gpt-3.5-turbo,Mixtral-8x7B-Instruct-v0.1,TimePerPrompt_GPT-3.5-turbo,TimePerPrompt_Mixtral-8x7B-Instruct-v0.1
+gpt-3.5-turbo,0.76,0.55,33.0,65.229
+mistralai/Mixtral-8x7B-Instruct-v0.1,0.5,0.51,60.771,90.0
+Gryphe/MythoMax-L2-13b,0.92,0.8,19.836,44.088
+Qwen/Qwen2.5-7B-Instruct-Turbo,0.26,0.3538461538461538,78.354,95.84615384615384
+google/gemma-2b-it,0.23,0.22,53.27,84.0
