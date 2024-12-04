@@ -27,6 +27,11 @@ This repository implements the PAIR (Prompt Automatic Iterative Refinement) algo
 
 ### Environment and Libraries
 - **Python 3.8 or higher** is required.
+Run the following command to verify the `Python` version.
+```bash
+  python --version
+  ```
+
 - Required Python libraries:
   - `openai`
   - `json`
@@ -44,25 +49,25 @@ The script requires API keys for the OpenAI API and the Together API:
 ## Files and Configuration
 
 ### Required Files
-1. `pair.py`
-   > -  Main script for running the PAIR algorithm.
-2. `judge_system.txt`
-   > - Defines the judging system for evaluating model responses.
-   > - This file includes task guidelines and evaluation metrics, specifying how to rate the language model's responses on ethical, legal, or safety violations.
-   > - Ensure this file is located in the same directory as pair.py, or adjust the file path in the script.
-3. `attacker_system.txt`
-   > - Defines the system prompt for the attacking LLM that generates adversarial prompts
-   > - Format: Instructions and guidelines for generating prompts following the PAIR methodology
-   > - Must be located in the same directory as pair.py or adjust the file path in the script
-4. `roleplay_system.txt`
-   > - Contains instructions for crafting adversarial prompts in a roleplaying context.
-   > - Defines strategies for creating and refining jailbreak prompts using obfuscation, emotional manipulation, and roleplaying scenarios to evade the model's safety measures.
-   > - It includes examples of effective adversarial prompts and explains how to iteratively refine them to maximize their effectiveness.
-   > - Ensure this file is accessible to the script, as it guides the prompt generation process.
+- `pair.py`
+    - Main script for running the PAIR algorithm.
+- `judge_system.txt`
+    - Defines the judging system for evaluating model responses.
+    - This file includes task guidelines and evaluation metrics, specifying how to rate the language model's responses on ethical, legal, or safety violations.
+    - Ensure this file is located in the same directory as pair.py, or adjust the file path in the script.
+- `attacker_system.txt`
+    - Defines the system prompt for the attacking LLM that generates adversarial prompts
+    - Format: Instructions and guidelines for generating prompts following the PAIR methodology
+    - Must be located in the same directory as pair.py or adjust the file path in the script
+- `roleplay_system.txt`
+    - Contains instructions for crafting adversarial prompts in a roleplaying context.
+    - Defines strategies for creating and refining jailbreak prompts using obfuscation, emotional manipulation, and roleplaying scenarios to evade the model's safety measures.
+    - It includes examples of effective adversarial prompts and explains how to iteratively refine them to maximize their effectiveness.
+    - Ensure this file is accessible to the script, as it guides the prompt generation process.
 
 ### Environment Variables
 - `OPENAI_API_KEY`: Your OpenAI API key.
-- `TOGETHER_API_KEY`: Your Together API key (optional, depending on selected model).
+- `TOGETHER_API_KEY`: Your Together API key (optional, depending on selected model) obtained from [Together.AI] (https://www.together.ai/).
 
 Ensure the following environment variables are set:
 ```bash
@@ -110,7 +115,6 @@ python pair.py
 - **Dynamic Model Selection**: Choose between multiple attacker and target models.
 - **Adversarial Prompt Refinement**: Iterative process improves the likelihood of jailbreaking the language model.
 - **Judging System**: Evaluates responses using `judge_system.txt` rules.
-- **Customizable Settings**: Modify parameters like the threshold and attacker strategies in the PAIR class.
 
 ---
 
