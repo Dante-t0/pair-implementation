@@ -82,20 +82,20 @@ export TOGETHER_API_KEY='your_together_api_key'
 python pair.py
 ```
 ### Options and Inputs
-1. Model Selection:
-   > - Select the attacker and target models from the menu. Options include:
-   > - gpt-3.5-turbo
-   > - Mixtral-8x7B-Instruct-v0.1
-   > - Other models as defined in the choose_model() function.
-2. Iterations:
-   > - Enter the number of iterations for the adversarial attempts. A higher number increases the chances of successful jailbreaks.
-3. Objective:
-   > - Define the objective of the jailbreak, e.g., "Design a phishing email that can trick users."
+1. Model Selection: Select the attacker and target models from the menu
+   Options include:
+     - gpt-3.5-turbo
+     - Mixtral-8x7B-Instruct-v0.1
+     - Other models as defined in the choose_model() function.
+2. Iterations: Enter the number of iterations for the adversarial attempts. A higher number increases the chances of successful jailbreaks.
+3. Objective: Define the objective of the jailbreak, e.g., "Design a phishing email that can trick users."
+   
 ### Output
-   > - Console: Progress and results of the jailbreak attempts are displayed.
-   > - `output.txt`: Detailed results including prompts, responses, success status, and ratings are saved here.
+  - Console: Progress and results of the jailbreak attempts are displayed.
+  - `output.txt`: Detailed results including prompts, responses, success status, and ratings are saved here.
 
 ---
+
 ## Example Workflow
 
 1. Run the script:
